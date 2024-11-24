@@ -65,6 +65,7 @@ used.
 
 **code:**
 
+```
 `timescale 1ns / 1 ns
 module counter(clk,m,rst,count);
 input clk,m,rst;
@@ -79,9 +80,11 @@ else
 count=count-1;
 end
 endmodule
+```
 
 **tcl code:**
 
+```
 read_libs /cadence/install/FOUNDRY-01/digital/90nm/dig/lib/slow.lib
 read_hdl counter.v
 elaborate
@@ -104,15 +107,18 @@ write_hdl > counter_netlist.v
 write_sdc > output_constraints.sdc 
 
 gui_show
+```
 
 **sdc:**
-
+```
 create_clock -name clk -period 2 -waveform {0 1} [get_ports "clk"]
 set_clock_transition -rise 0.1 [get_clocks "clk"]
 set_clock_transition -fall 0.1 [get_clocks "clk"]
 set_clock_uncertainty 0.01 [get_ports "clk"]
 set_input_delay -max 0.8 [get_ports "rst"] -clock [get_clocks "clk"]
 set_output_delay -max 0.8 [get_ports "count"] -clock [get_clocks "clk"]
+```
+
 #### Synthesis RTL Schematic :
 
 ![Screenshot 2024-11-24 190333](https://github.com/user-attachments/assets/b4c02e4e-b27a-40f6-9096-c36a3dbcbcff)
