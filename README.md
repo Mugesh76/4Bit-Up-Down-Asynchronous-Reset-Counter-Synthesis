@@ -63,13 +63,76 @@ used.
 
 • Genus Script file with .tcl file Extension commands are executed one by one to synthesize the netlist.
 
+**code**:
+
+`timescale 1ns / 1 ns
+module counter(clk,m,rst,count);
+input clk,m,rst;
+output reg [3:0] count;
+always@(posedge clk or negedge rst)
+begin
+if (!rst)
+count=0;
+else if(m)
+count=count+1;
+else
+count=count-1;
+end
+endmodule
+
+**tcl code:**
+
+read_libs /cadence/install/FOUNDRY-01/digital/90nm/dig/lib/slow.lib
+read_hdl counter.v
+elaborate
+read_sdc input_constraints.sdc 
+
+syn_generic
+report_area
+syn_map
+report_area
+syn_opt
+report_area 
+
+report_area > counter_area.txt
+report_power > counter_power.txt
+report_timing > counter_timing.txt
+report_area > counter_cell.txt
+report_gates > counter_gates.txt
+
+write_hdl > counter_netlist.v
+write_sdc > output_constraints.sdc 
+
+gui_show
+
+**sdc:**
+
+create_clock -name clk -period 2 -waveform {0 1} [get_ports "clk"]
+set_clock_transition -rise 0.1 [get_clocks "clk"]
+set_clock_transition -fall 0.1 [get_clocks "clk"]
+set_clock_uncertainty 0.01 [get_ports "clk"]
+set_input_delay -max 0.8 [get_ports "rst"] -clock [get_clocks "clk"]
+set_output_delay -max 0.8 [get_ports "count"] -clock [get_clocks "clk"]
+
 #### Synthesis RTL Schematic :
+
+![Screenshot 2024-11-24 190333](https://github.com/user-attachments/assets/e0a59e74-666b-4ebb-9db7-18890a1c2814)
+
 
 #### Area report:
 
+![Screenshot 2024-11-24 190419](https://github.com/user-attachments/assets/11c0fa55-71e9-49ed-ae25-4d2867498711)
+
+
 #### Power Report:
 
+![Screenshot 2024-11-24 190435](https://github.com/user-attachments/assets/3ac0919a-1e89-4596-8c14-ac9f63fdeb21)
+
+
 #### Timing Report: 
+
+![Screenshot 2024-11-24 190448](https://github.com/user-attachments/assets/6cec6027-fa13-4ecc-bc43-4011222c2a27)
+
 
 #### Result: 
 
